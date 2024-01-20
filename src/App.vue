@@ -31,7 +31,6 @@ class="mx-auto"
     <RouterView/>
   </v-main>
 
-
   </v-layout>
 
   </v-card>
