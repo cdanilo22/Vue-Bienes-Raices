@@ -1,5 +1,10 @@
 <script setup>
   import HomeView from './views/HomeView.vue';
+  import {useAuthStore} from './stores/auth'
+
+  const auth = useAuthStore()
+  
+
 </script>
 
 <template>
@@ -19,9 +24,17 @@ class="mx-auto"
   </template>
 
   <template v-slot:append>
-    <v-btn :to="{name: 'home'}" >Inicio</v-btn>
+    <div v-if="auth.isAuth">
+      <v-btn :to="{name: 'admin-propiedades'}" >Admin</v-btn>
+      <v-btn @click="auth.logout">Cerrar Sesión</v-btn>
+    </div>
+    <div v-else>
+      <v-btn :to="{name: 'home'}" >Inicio</v-btn>
+      <v-btn :to="{name: 'login'}">Inicio de Sesión</v-btn>
 
-    <v-btn :to="{name: 'login'}">Inicio de Sesión</v-btn>
+    </div>
+
+
   </template>
 
 
@@ -36,4 +49,5 @@ class="mx-auto"
   </v-card>
 
   </template>
+
 
