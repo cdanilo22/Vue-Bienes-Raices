@@ -4,8 +4,13 @@
     import {useFirestore} from 'vuefire'
     import { useRouter } from 'vue-router'
     import {validationSchema, imageSchema} from '../../validation/propiedadSchema'
-    
+    import useImage from '../../composables/useImage'
+
+
     const items = [1,2,3,4,5]
+
+    const { url, uploadImage, image } = useImage()
+
     const router = useRouter()
     const db = useFirestore()
 
@@ -23,8 +28,8 @@
     const wc = useField('wc')
     const estacionamiento = useField('estacionamiento')
     const descripcion = useField('descripcion')
-    const piscina = useField('piscina', null ,{
-     initialValue: false   
+    const piscina = useField('piscina', null, {
+        initialValue: false
     })
 
 
@@ -33,11 +38,12 @@
         const {imagen, ...propiedad} = values
      
         const docRef = await addDoc(collection(db, "propiedades"), {
-        ...propiedad
+        ...propiedad,
+        imagen: url.value
         });
-          if(docRef.id){
+        if(docRef.id){
             router.push({name: 'admin-propiedades'})
-        }
+        } 
      })
 
 </script>
@@ -73,7 +79,14 @@
                 class="mb-5"
                 v-model="imagen.value.value"
                 :error-messages="imagen.errorMessage.value"
+                @change="uploadImage" 
             />
+
+            <div v-if="image" class="my-5">
+                <p class="font-weight-bold">Imagen Propiedad:</p>
+                <img class="w-50" :src="image">
+            </div>
+
 
             <v-text-field
                 type="number"
