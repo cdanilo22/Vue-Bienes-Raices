@@ -1,9 +1,19 @@
 <script setup>
     import {useForm, useField} from 'vee-validate'
+    import {collection, addDoc} from 'firebase/firestore'
+    import {useFirestore} from 'vuefire'
+    import { useRouter } from 'vue-router'
     import {validationSchema, imageSchema} from '../../validation/propiedadSchema'
-    
+    import useImage from '../../composables/useImage'
+
+
     const items = [1,2,3,4,5]
-   
+
+    const { url, uploadImage, image } = useImage()
+
+    const router = useRouter()
+    const db = useFirestore()
+
     const {handleSubmit} = useForm({
         validationSchema: {
             ...validationSchema,
@@ -11,17 +21,31 @@
         }
     })
 
-   const titulo = useField('titulo')
-   const imagen = useField('imagen')
-   const precio = useField('precio')
-   const habitaciones = useField('habitaciones')
-   const wc = useField('wc')
-   const estacionamiento = useField('estacionamiento')
-   const descripcion = useField('descripcion')
-
-    const submit = handleSubmit((values)=>{
-        console.log(values);
+    const titulo = useField('titulo')
+    const imagen = useField('imagen')
+    const precio = useField('precio')
+    const habitaciones = useField('habitaciones')
+    const wc = useField('wc')
+    const estacionamiento = useField('estacionamiento')
+    const descripcion = useField('descripcion')
+    const piscina = useField('piscina', null, {
+        initialValue: false
     })
+
+
+    const submit = handleSubmit(async (values) => {
+
+        const {imagen, ...propiedad} = values
+     
+        const docRef = await addDoc(collection(db, "propiedades"), {
+        ...propiedad,
+        imagen: url.value
+        });
+        if(docRef.id){
+            router.push({name: 'admin-propiedades'})
+        } 
+     })
+
 </script>
 
 <template>
@@ -52,10 +76,17 @@
                 accept="image/jpeg"
                 label="Fotografía"
                 prepend-icon="mdi-camera"
-                class="mb-5" 
+                class="mb-5"
                 v-model="imagen.value.value"
                 :error-messages="imagen.errorMessage.value"
+                @change="uploadImage" 
             />
+
+            <div v-if="image" class="my-5">
+                <p class="font-weight-bold">Imagen Propiedad:</p>
+                <img class="w-50" :src="image">
+            </div>
+
 
             <v-text-field
                 type="number"
@@ -109,9 +140,18 @@
 
                 </v-col>
             </v-row>
-            <v-textarea class="mb-5" label="Descripción" v-model="descripcion.value.value" :error-messages="descripcion.errorMessage.value"></v-textarea>
+            <v-textarea
+              class="mb-5"
+              label="Descripción"
+              v-model="descripcion.value.value"
+              :error-messages="descripcion.errorMessage.value"
+              ></v-textarea>
 
-            <v-checkbox label="piscina"/>
+            <v-checkbox label="piscina"
+            v-model="piscina.value.value"
+            :error-messages="piscina.errorMessage.value"
+            
+            />
 
             <v-btn
               color="pink-accent-3"
@@ -121,11 +161,6 @@
               >
                 Agregar Propiedad
             </v-btn>
-          
-
         </v-form>
-
-
-
     </v-card>
 </template>
