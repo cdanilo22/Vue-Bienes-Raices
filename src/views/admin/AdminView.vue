@@ -1,4 +1,6 @@
 <script setup>
+  import usePropiedades from "../../composables/usePropiedades";
+  const {propiedadesCollection} = usePropiedades()
 
 </script>
 
