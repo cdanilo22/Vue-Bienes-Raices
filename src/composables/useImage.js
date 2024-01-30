@@ -19,7 +19,7 @@ export default function useImage() {
             upload(data)
         }
 
-        console.log(url);
+      //  console.log(url);
     }
 
 
