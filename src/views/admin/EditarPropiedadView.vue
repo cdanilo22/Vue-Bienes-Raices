@@ -1,5 +1,6 @@
 <script setup>
-    import {useRoute} from 'vue-router'
+    import {watch} from 'vue'
+    import {useRoute, useRouter} from 'vue-router'
     import {useFirestore, useDocument} from 'vuefire'
     import {doc, updateDoc} from 'firebase/firestore'
 
@@ -28,17 +29,49 @@
     const wc = useField('wc')
     const estacionamiento = useField('estacionamiento')
     const descripcion = useField('descripcion')
-    const alberca = useField('alberca')
+    const piscina = useField('piscina')
 
 
     const route = useRoute()
+    const router  = useRouter()
 
     //Obtener la Propiedad a editar
     const db = useFirestore()
     const docRef = doc(db, 'propiedades', route.params.id)
     const propiedad = useDocument(docRef)
-    const submit = handleSubmit(values => {
-        
+
+    watch(propiedad, (propiedad) => {
+      titulo.value.value = propiedad.titulo
+      precio.value.value = propiedad.precio
+      habitaciones.value.value = propiedad.habitaciones
+      wc.value.value = propiedad.wc
+      estacionamiento.value.value = propiedad.estacionamiento
+      descripcion.value.value = propiedad.descripcion
+      piscina.value.value = propiedad.piscina
+      center.value = propiedad.ubicacion
+  })
+    const submit = handleSubmit(async values => {
+
+        const {imagen, ...propiedad} = values
+        if(image.value){
+            const data = {
+                ...propiedad,
+                imagen: url.value,
+                ubicacion: center.value
+            }
+       
+            await updateDoc(docRef, data)
+        } else{    
+            const data = {
+                ...propiedad,
+                ubicacion: center.value
+            }
+       
+            await updateDoc(docRef, data)
+        }
+
+        router.push({name: 'admin-propiedades'})
+
     })
 </script>
 
@@ -71,6 +104,19 @@
 
             <div class="my-5">
                 <p class="font-weight-bold">Imagen Actual:</p>
+                <img 
+                v-if="image"
+                class="w-50"
+                :src="image"
+                />
+
+                <img 
+                v-else
+                class="w-50"
+                :src="propiedad?.imagen"
+                />
+
+
             </div>
 
 
@@ -130,8 +176,8 @@
             ></v-textarea>
 
             <v-checkbox 
-                v-model="alberca.value.value"
-                label="Alberca"
+                v-model="piscina.value.value"
+                label="Piscina"
             ></v-checkbox>
 
 
@@ -165,6 +211,3 @@
         </v-form>
 </v-card>
 </template>
-
-
-
