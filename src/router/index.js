@@ -29,6 +29,11 @@ const router = createRouter({
           component: () => import('../views/admin/AdminView.vue')
         },
         {
+          path: '/propiedades/:id',
+          name: 'propiedad',
+          component: () => import('../views/PropiedadView.vue')
+        },
+        {
           path: '/admin/nueva',
           name: 'nueva-propiedad',
           meta: {requiresAuth: true},

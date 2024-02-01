@@ -1,7 +1,8 @@
 <script setup>
  import usePropiedades from '../composables/usePropiedades'
   import Propiedad from '../components/Propiedad.vue'
- const { propiedadesCollection, priceProperty} = usePropiedades()
+  import {priceProperty} from '../helpers'
+const { piscina, filteredItems} = usePropiedades()
 </script>
 
 <template>
@@ -10,10 +11,15 @@
   
   <v-card flat class="py-10">
 
-    <v-row>
+    <v-card-title class="text-h5">
+      Búsqueda
+  
+     <v-checkbox label="piscina" v-model="piscina"/>
+    </v-card-title>
 
+    <v-row>
       <Propiedad
-        v-for="propiedad in propiedadesCollection"
+        v-for="propiedad in filteredItems"
         :key="propiedad.id"
         :propiedad="propiedad"
         :price="priceProperty"

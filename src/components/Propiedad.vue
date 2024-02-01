@@ -34,14 +34,12 @@
                 block
                 color="info"
                 variant="flat"
+                :to="{name: 'propiedad', params: {id: propiedad.id} }"
                 
                 >
                     Ver Información
                 </v-btn>
             </template>
-
-
        </v-card>
     </v-col>
-</template>
-
+</template> 
