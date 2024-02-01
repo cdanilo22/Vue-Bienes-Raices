@@ -23,7 +23,7 @@ const router = createRouter({
       meta: {requiresAuth: true},
       children: [
         {
-          path: '/admin/propiedades',
+          path: 'propiedades',
           name: 'admin-propiedades',
           meta: {requiresAuth: true},
           component: () => import('../views/admin/AdminView.vue')
@@ -34,13 +34,13 @@ const router = createRouter({
           component: () => import('../views/PropiedadView.vue')
         },
         {
-          path: '/admin/nueva',
+          path: 'nueva',
           name: 'nueva-propiedad',
           meta: {requiresAuth: true},
           component: () => import('../views/admin/NuevaPropiedadView.vue')
         },
         {
-          path: '/admin/editar/:id',
+          path: 'editar/:id',
           name: 'editar-propiedad',
           meta: {requiresAuth: true},
           component: () => import('../views/admin/EditarPropiedadView.vue')
